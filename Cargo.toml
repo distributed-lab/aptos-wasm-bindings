@@ -1,0 +1,16 @@
+[package]
+name = "aptos_wasm_bindings"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wasm-bindgen = "0.2.93"
+bulletproofs = "4.0.0"
+once_cell = "1.10.0"
+curve25519-dalek-ng = "4"
+merlin = "3"
+getrandom = { version = "0.2", features = ["js"] }
+js-sys = "0.3.70"
+
+[lib]
+crate-type = ["cdylib"]
