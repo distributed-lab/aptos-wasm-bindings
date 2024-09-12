@@ -21,7 +21,7 @@ jobs:
           echo "VERSION=$(grep '^version' Cargo.toml | sed -E 's/version = \"(.*)\"/\1/')" >> $GITHUB_ENV
 
       - name: Build with wasm-pack
-        run: wasm-pack build --release --target web
+        run: wasm-pack build --release --target nodejs
 
       - name: Rename Wasm file with version
         run: |
