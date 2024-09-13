@@ -10,7 +10,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Install Rust
+      - name: Install wasm-pack
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
@@ -23,14 +23,17 @@ jobs:
       - name: Build with wasm-pack
         run: wasm-pack build --release --target nodejs
 
-      - name: Rename Wasm file with version
+      - name: Rename wasm file
         run: |
           mkdir -p dist
           mv pkg/${{ env.NAME }}_bg.wasm pkg/${{ env.NAME }}_${{ env.VERSION }}.wasm
 
-      - name: Upload Wasm file as artifact
-        uses: actions/upload-artifact@v4
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ${{ env.NAME }}_${{ env.VERSION }}.wasm
-          path: pkg/${{ env.NAME }}_${{ env.VERSION }}.wasm
-          overwrite: false
+          token: ${{ github.token }}
+          tag_name: ${{ env.VERSION }}
+          name: Release v${{ env.VERSION }}
+          files: pkg/${{ env.NAME }}_${{ env.VERSION }}.wasm
+          draft: false
+          prerelease: false
