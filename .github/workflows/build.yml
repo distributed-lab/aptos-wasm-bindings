@@ -21,12 +21,13 @@ jobs:
 
       - name: Get package name and version
         run: |
-          echo "CARGO_NAME=$(grep '^name' Cargo.toml | sed -E 's/name = \"(.*)\"/\1/')" >> $GITHUB_ENV
-          echo "NPM_NAME=$(echo "${{ env.CARGO_NAME }}" | sed 's/_/-/g')" >> $GITHUB_ENV
-          echo "VERSION=$(grep '^version' Cargo.toml | sed -E 's/version = \"(.*)\"/\1/')" >> $GITHUB_ENV
-          echo ${{ env.CARGO_NAME }}
-          echo ${{ env.NPM_NAME }}
-          echo ${{ env.VERSION }}
+          CARGO_NAME=$(grep '^name' Cargo.toml | sed -E 's/name = \"(.*)\"/\1/')
+          NPM_NAME=$(echo "$CARGO_NAME" | sed 's/_/-/g')
+          VERSION=$(grep '^version' Cargo.toml | sed -E 's/version = \"(.*)\"/\1/')
+          echo "CARGO_NAME=$CARGO_NAME" >> $GITHUB_ENV
+          echo "NPM_NAME=$NPM_NAME" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - name: Build ESM
         run: |
           wasm-pack build --release --target web -d pkg
@@ -34,7 +35,7 @@ jobs:
           mv "pkg/${{ env.CARGO_NAME }}.d.ts" "pkg/${{ env.NPM_NAME }}.d.ts"
           mv "pkg/${{ env.CARGO_NAME }}_bg.wasm" "pkg/${{ env.NPM_NAME }}-bg.wasm"
           sed -i "s/${{ env.CARGO_NAME }}_bg.wasm/${{ env.NPM_NAME }}-bg.wasm/g" "pkg/${{ env.NPM_NAME }}-esm.js"
-          echo "pkg/${{ env.NPM_NAME }}.d.ts"
+
       - name: Build CommonJS
         run: |
           npm install --global rollup
