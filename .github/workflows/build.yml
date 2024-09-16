@@ -10,40 +10,37 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v3
 
-      - name: Install wasm-pack
+      - name: Install Wasm-pack
         run: |
           curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.18.x"
+          cache: npm
+
       - name: Get package name and version
-        id: cargo_version
         run: |
           echo "NAME=$(grep '^name' Cargo.toml | sed -E 's/name = \"(.*)\"/\1/')" >> $GITHUB_ENV
           echo "VERSION=$(grep '^version' Cargo.toml | sed -E 's/version = \"(.*)\"/\1/')" >> $GITHUB_ENV
 
-      - name: Build with wasm-pack
-        run: wasm-pack build --release --target nodejs
-
-      - name: Rename wasm file
+      - name: Build ESM
         run: |
-          mkdir -p dist
-          mv pkg/${{ env.NAME }}_bg.wasm pkg/${{ env.NAME }}_${{ env.VERSION }}.wasm
+          wasm-pack build --release --target web -d pkg
+          mv pkg/${{ env.NAME }}.js pkg/${{ env.NAME }}_esm.js
 
-      - name: Create release
-        uses: softprops/action-gh-release@v2
-        id: create_release
-        with:
-          token: ${{ github.token }}
-          tag_name: ${{ env.VERSION }}
-          name: Release v${{ env.VERSION }}
-          draft: false
-          prerelease: false
+      - name: Build CommonJS
+        run: |
+          npm install --global rollup
+          rollup pkg/${{ env.NAME }}_esm.js --file pkg/${{ env.NAME }}_cjs.js --format cjs
+      
+      - name: Create package.json
+        run: |
+          cp -f package.json pkg/package.json
+          sed -i "s/\"version\": \".*\"/\"version\": \"${{ env.VERSION }}\"/" pkg/package.json
 
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: pkg/${{ env.NAME }}_${{ env.VERSION }}.wasm
-          asset_name: ${{ env.NAME }}_${{ env.VERSION }}.wasm
-          asset_content_type: application/wasm
+      - name: Publish to npm
+        run: |
+          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_ACCESS_TOKEN }}
+          npm publish pkg/ --access public
