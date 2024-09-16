@@ -22,7 +22,7 @@ jobs:
       - name: Get package name and version
         run: |
           echo "CARGO_NAME=$(grep '^name' Cargo.toml | sed -E 's/name = \"(.*)\"/\1/')" >> $GITHUB_ENV
-          echo "NPM_NAME=${{ env.CARGO_NAME }} | sed 's/_/-/g'
+          echo "NPM_NAME=${{ env.CARGO_NAME }} | sed 's/_/-/g'" >> $GITHUB_ENV
           echo "VERSION=$(grep '^version' Cargo.toml | sed -E 's/version = \"(.*)\"/\1/')" >> $GITHUB_ENV
 
       - name: Build ESM
