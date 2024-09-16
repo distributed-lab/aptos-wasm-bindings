@@ -28,20 +28,21 @@ jobs:
       - name: Build ESM
         run: |
           wasm-pack build --release --target web -d pkg
-          mv pkg/${{ env.CARGO_NAME }}.js pkg/${{ env.NPM_NAME }}-esm.js
-          mv pkg/${{ env.CARGO_NAME }}.d.ts pkg/${{ env.NPM_NAME }}.d.ts
-          mv pkg/${{ env.CARGO_NAME }}_bg.wasm pkg/${{ env.NPM_NAME }}-bg.wasm
+          mv "pkg/${{ env.CARGO_NAME }}.js" "pkg/${{ env.NPM_NAME }}-esm.js"
+          mv "pkg/${{ env.CARGO_NAME }}.d.ts" "pkg/${{ env.NPM_NAME }}.d.ts"
+          mv "pkg/${{ env.CARGO_NAME }}_bg.wasm" "pkg/${{ env.NPM_NAME }}-bg.wasm"
+          echo "Renamed files"
           sed -i "s/${{ env.CARGO_NAME }}_bg.wasm/${{ env.NPM_NAME }}-bg.wasm/g" "pkg/${{ env.NPM_NAME }}-esm.js"
 
       - name: Build CommonJS
         run: |
           npm install --global rollup
-          rollup pkg/${{ env.NPM_NAME }}-esm.js --file pkg/${{ env.NPM_NAME }}-cjs.js --format cjs
+          rollup "pkg/${{ env.NPM_NAME }}-esm.js" --file "pkg/${{ env.NPM_NAME }}-cjs.js" --format cjs
       
       - name: Create package.json
         run: |
           cp -f package.json pkg/package.json
-          sed -i "s/\"version\": \".*\"/\"version\": \"${{ env.VERSION }}\"/" pkg/package.json
+          sed -i "s/\"version\": \".*\"/\"version\": \"${{ env.VERSION }}\"/" "pkg/package.json"
 
       - name: Publish to npm
         run: |
