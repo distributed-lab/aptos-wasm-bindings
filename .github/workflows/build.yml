@@ -24,7 +24,9 @@ jobs:
           echo "CARGO_NAME=$(grep '^name' Cargo.toml | sed -E 's/name = \"(.*)\"/\1/')" >> $GITHUB_ENV
           echo "NPM_NAME=$(echo "${{ env.CARGO_NAME }}" | sed 's/_/-/g')" >> $GITHUB_ENV
           echo "VERSION=$(grep '^version' Cargo.toml | sed -E 's/version = \"(.*)\"/\1/')" >> $GITHUB_ENV
-
+          echo ${{ env.CARGO_NAME }}
+          echo ${{ env.NPM_NAME }}
+          echo ${{ env.VERSION }}
       - name: Build ESM
         run: |
           wasm-pack build --release --target web -d pkg
