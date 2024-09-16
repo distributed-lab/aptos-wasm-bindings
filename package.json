@@ -13,10 +13,10 @@
   "exports": {
     ".": {
       "require": {
-        "default": "aptos-wasm-bindings-cjs.js"
+        "default": "./aptos-wasm-bindings-cjs.js"
       },
       "import": {
-        "default": "aptos-wasm-bindings-esm.js"
+        "default": "./aptos-wasm-bindings-esm.js"
       }
     }
   }
