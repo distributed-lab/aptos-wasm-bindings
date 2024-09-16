@@ -2,21 +2,21 @@
   "name": "@distributedlab/aptos-wasm-bindings",
   "version": "",
   "files": [
-    "aptos_wasm_bindings_bg.wasm",
-    "aptos_wasm_bindings_cjs.js",
-    "aptos_wasm_bindings_esm.js",
-    "aptos_wasm_bindings.d.ts"
+    "aptos-wasm_bindings-bg.wasm",
+    "aptos-wasm_bindings-cjs.js",
+    "aptos-wasm_bindings-esm.js",
+    "aptos-wasm-bindings.d.ts"
   ],
-  "main": "aptos_wasm_bindings_cjs.js",
-  "module": "aptos_wasm_bindings_esm.js",
-  "types": "aptos_wasm_bindings.d.ts",
+  "main": "aptos-wasm-bindings-cjs.js",
+  "module": "aptos-wasm-bindings-esm.js",
+  "types": "aptos-wasm-bindings.d.ts",
   "exports": {
     ".": {
       "require": {
-        "default": "aptos_wasm_bindings_cjs.js"
+        "default": "aptos-wasm-bindings-cjs.js"
       },
       "import": {
-        "default": "aptos_wasm_bindings_esm.js"
+        "default": "aptos-wasm-bindings-esm.js"
       }
     }
   }
